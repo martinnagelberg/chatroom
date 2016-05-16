@@ -439,7 +439,7 @@ int login_callback(void* user_login_info, int argc, char** argv, char** column_n
         login_info -> login_status = LOGIN_STATUS_BANNED;
         return LOGIN_STATUS_BANNED;
     }
-    login_info->privileges = *(argv[2]);
+    login_info->privileges = *(argv[2]) - 48;
     login_info->login_status = LOGIN_STATUS_SUCCESS;
 
     return 0;

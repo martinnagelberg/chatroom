@@ -122,8 +122,15 @@ void handle_login(int user_index){
 	read_byte(user_list[user_index]->recv_buffer, &color);
 
 
-	if(login(username, password, &log_info) != LOGIN_STATUS_SUCCESS) {
-		write_talk(user_index, "Usuario o contraseña inválidos.", ERROR_COLOR);
+	int ret_val = login(username, password, &log_info);
+
+	if (ret_val != QUERY_OK){
+
+		if(ret_val == ERROR_USER_OR_PW_INCORRECT)
+			write_talk(user_index, "Usuario o contraseña inválidos.", ERROR_COLOR);
+		else if (ret_val == ERROR_USER_BANNED)
+			write_talk(user_index, "Usuario baneado.", ERROR_COLOR);
+
 		write_disconnect(user_index);
 		return;
 	}
@@ -153,7 +160,7 @@ void handle_register(int user_index) {
 	read_string(user_list[user_index]->recv_buffer, username); 
 	read_string(user_list[user_index]->recv_buffer, password);
 
-	if(register_user(username, password) != SQLITE_OK){
+	if(register_user(username, password) == ERROR_USER_ALREADY_REGISTERED){
 		write_talk(user_index, "Usuario ya existente.", ERROR_COLOR);
 		write_disconnect(user_index);
 		return;
@@ -184,7 +191,7 @@ void handle_talk(int user_index){ //user index es el ejecutante. target a quien 
 
 	sprintf(message, "%s>> %s", user_list[user_index]->name, data);
 
-	//insert_chatlog(user_list[user_index]->name, data); //guardo los logs
+	insert_chatlog(user_list[user_index]->name, data); //guardo los logs
 
 	for (int i = 0; i < connected_users; i++){
 		write_talk(i, message, color);
@@ -216,9 +223,10 @@ void handle_change_pw(int user_index){
 
 	read_string(user_list[user_index]->recv_buffer, new_password); 
 
+	change_password(user_list[user_index]->name, new_password);
+
+	write_talk(user_index, "Contraseña cambiada satisfactoriamente.", SERVER_COLOR);
 	//llamar a la db para cambiar clave solo si la old es correcta.
-
-
 
 
 }
@@ -259,7 +267,8 @@ void handle_ban(int user_index){
 	sprintf(aux_buff, "Baneado por: %s. Motivo: %s", user_list[user_index]->name, reason);
 
 	int target_index = name_to_index(username);
-	//db ban status
+	
+	set_user_banned(username, 1);
 	write_talk(target_index, aux_buff, SERVER_COLOR);
 	write_disconnect(target_index);
 

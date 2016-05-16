@@ -103,6 +103,9 @@ void write_register(char * username, char * password){
           return;
     }
 
+    maxfd = client_connection_id;
+    FD_SET(client_connection_id, &fds);
+
 
     write_byte(client_send_buffer, REGISTER_USER);
     write_string(client_send_buffer, username);
@@ -129,7 +132,7 @@ void write_delete(){
 void write_talk(char * mensaje){
 	
    if (client_connection_id <= 0){
-    printf(RED "%s\n" RESET_COLOR, "No estás conectado.");
+    printf(RED "%s\n" RESET_COLOR, "No estás conectado."); //sacar los espacios
     return;
    }
 
@@ -152,12 +155,17 @@ void handle_talk(){
 
 }
 
-void write_change_color(int color){
+void write_change_color(BYTE color){
 
    if (client_connection_id <= 0){
     printf(RED "No estás conectado.\n" RESET_COLOR);
     return;
    }
+
+   if (color > 6 || color < 0){
+        printf(RED "Color inválido.\n" RESET_COLOR);
+        return;
+    }
 
    write_byte(client_send_buffer, CHANGE_COLOR);
    write_byte(client_send_buffer, color);

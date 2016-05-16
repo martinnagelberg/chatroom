@@ -86,7 +86,6 @@ int is_db_initiated() {
         rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 
         if (rc != SQLITE_OK) {
-            //fprintf(stderr, "Couldn't get the chatlog. Error: %s\n", errMsg);
             sqlite3_free(errMsg);
         }
         else {
@@ -95,7 +94,6 @@ int is_db_initiated() {
             rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 
             if (rc != SQLITE_OK) {
-                //fprintf(stderr, "Couldn't get the chatlog. Error: %s\n", errMsg);
                 sqlite3_free(errMsg);
             }
         }

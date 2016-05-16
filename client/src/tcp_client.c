@@ -44,8 +44,6 @@ void handle_tcp_packets(){
             break;
 
     }
-
-
 }
 
 
@@ -113,7 +111,6 @@ void write_delete(){
     write_byte(client_send_buffer, DELETE_USER);
 
     flush_buffer(client_connection_id, client_send_buffer);
-
 
 }
 

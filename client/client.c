@@ -54,7 +54,7 @@ int main(int argc , char *argv[])
 
 
     int r_bytes;
-    char user_input[256];
+    char user_input[STDIN_BUFFER_SIZE];
     char* arg1 = NULL;
     char* arg2 = NULL;
 	int cmd;
@@ -134,24 +134,20 @@ int main(int argc , char *argv[])
 			if (arg2 != NULL){
 				free(arg2);
 			}
-				
-			arg1 = arg2 = NULL;
 			
+			arg1 = arg2 = NULL;
         }
         
         if (FD_ISSET(client_connection_id, &fds)){
-
             r_bytes = load_buffer(client_connection_id, client_recv_buffer);
 
             while (client_recv_buffer->pos + 1 < r_bytes){
-            	
                 handle_tcp_packets();
                 
                 client_recv_buffer->pos+=1;
             }
 
             clean_buffer(client_recv_buffer);
-
         }
     }
 

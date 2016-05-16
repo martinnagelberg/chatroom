@@ -40,5 +40,6 @@ int delete_username(char * username);
 int db_create();
 int is_db_initiated();
 int set_user_banned(char* username, char flag);
+int change_password(char* username, char* password);
 
 #endif

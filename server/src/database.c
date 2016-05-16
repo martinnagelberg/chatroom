@@ -247,7 +247,7 @@ int set_user_banned(char* username, char flag) {
 /**
  * Cambio la password de cierto usuario.
  */
-int set_user_banned(char* username, char* password) {
+int change_password(char* username, char* password) {
 	sqlite3* db;
     int rc;
     char sql[128];

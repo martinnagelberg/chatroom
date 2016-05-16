@@ -16,7 +16,7 @@
 #define FAILED_LOGOUT_MSG "Command syntax error. Correct format is: /logout\n"
 #define FAILED_GET_ONLINE_USERS "Command syntax error. Correct format is: /get_online:users\n"
 
-#define CMD_ERROR 666
+#define CMD_ERROR 66
 #define CMD_CHAT 0
 #define CMD_LOGIN 1
 #define CMD_REGISTER 2
@@ -27,7 +27,7 @@
 #define CMD_KICK 7
 #define CMD_BAN 8
 #define CMD_LOGOUT 9
-#define CMD_GET_ONLINE_USERS
+#define CMD_GET_ONLINE_USERS 10
 
 int parse_cmd(char* msg, char** arg1, char** arg2);
 

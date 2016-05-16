@@ -37,10 +37,19 @@ int parse_cmd(char* msg, char** arg1, char** arg2) {
 		*arg1 = malloc(sizeof(char) * arg1_length);
 		strcpy(*arg1, msg + cmd_length + 1);
 		if (msg_length - cmd_length - arg1_length - 2 > 0) { 	//Si hay un 2do arg
-			arg2_length = strlen(msg + arg1_length + 2);
+			//printf("Inicio arg2: %c\n", *(msg + cmd_length + arg1_length + 2));
+			arg2_length = strlen(msg + cmd_length + arg1_length + 2);
 			*arg2 = malloc(sizeof(char) * arg2_length);
 			strcpy(*arg2, msg + cmd_length + arg1_length + 2);
+			//printf("Arg 2: %s\n", *arg2);
 		}
+	}
+	
+	//printf("MSG_LEN: %d\nCMD LEN: %d\nARG1 LEN: %d\nARG2 LEN: %d\n", msg_length, cmd_length, arg1_length, arg2_length);
+	
+	if (cmd_length + arg1_length + arg2_length + 2 < msg_length - 1) {
+		fprintf(stderr, "Demasiados argumentos\n");
+		return CMD_ERROR;
 	}
 	
 	for (int j = 0; j < cmds_amount; j++)
@@ -128,7 +137,6 @@ int parse_cmd(char* msg, char** arg1, char** arg2) {
 					return CMD_GET_ONLINE_USERS;
 			}
 		}
-		
 	return CMD_ERROR;
 }
 
@@ -167,11 +175,9 @@ void del_spaces(char* str){
 				str++;
 		}
 		if (*str == ' ') {
+			printf("0-\n");
 			*str = '\0';
 		}
 		str++;
 	}
  }
-
-
-

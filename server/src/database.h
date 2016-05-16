@@ -39,5 +39,6 @@ int get_chatlog(char* from, char* to, char** chatlog);
 int delete_username(char * username);
 int db_create();
 int is_db_initiated();
+int set_user_banned(char* username, char flag);
 
 #endif

@@ -21,6 +21,7 @@ int maxfd;
 t_buffer * client_send_buffer;
 t_buffer * client_recv_buffer;
 connection_info server_info;
+int logged;
 
 void show_help();
 
@@ -32,8 +33,6 @@ void init_client(char * ip, int port){
 
     strcpy(server_info.ip, ip);
     server_info.port = port;
-
-    client_connection_id = -1;
 
     client_send_buffer = create_buffer();
     client_recv_buffer = create_buffer();
@@ -63,29 +62,30 @@ int main(int argc , char *argv[])
 	
     init_client("127.0.0.1", 8888);
 
-    //write_login("pedrito", "pedrito123", 5);
-
     maxfd = 0;
     client_connection_id = 0;
     
     while (run){
 
-
         FD_ZERO(&fds);
-        FD_SET(client_connection_id, &fds); //al establecer conexion tengo que hacerlo.
-        FD_SET(0, &fds); //stdin
 
+    	if (logged)
+        	FD_SET(client_connection_id, &fds); //al establecer conexion tengo que hacerlo.
+        
+    
+        FD_SET(0, &fds); //stdin
         select(maxfd+1, &fds, NULL, NULL, NULL);
 
         if (FD_ISSET(0, &fds)){
-
+      
    			fgets(user_input, STDIN_BUFFER_SIZE, stdin);
    			
    			if (*user_input == '\n')
 				continue;
+
    			
 			cmd = parse_cmd(user_input, &arg1, &arg2);
-			
+
             switch(cmd) {
 				
 				case CMD_CHAT:
@@ -129,17 +129,25 @@ int main(int argc , char *argv[])
 					break;				
 			}
 			
+
 			if (arg1 != NULL){
 				free(arg1);
 			}
+
+
 			if (arg2 != NULL){
 				free(arg2);
 			}
 			
+
 			arg1 = arg2 = NULL;
         }
         
-        if (FD_ISSET(client_connection_id, &fds)){
+
+        
+        if (logged && FD_ISSET(client_connection_id, &fds)){
+
+  
             r_bytes = load_buffer(client_connection_id, client_recv_buffer);
 
             while (client_recv_buffer->pos + 1 < r_bytes){

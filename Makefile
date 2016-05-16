@@ -13,6 +13,7 @@ clean:
 	cd client; make clean imp=$(imp)
 	cd server; make clean imp=$(imp)
 	cd logger; make clean
+	ipcrm -Q 123;
 
 run:
 	cd logger; ./logger.bin &

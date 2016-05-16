@@ -15,8 +15,9 @@
 #define MAX_USERS 100
 //struct para usuarios
 
-t_user * user_list[MAX_USERS];
+t_user * user_list[MAX_USERS] = { NULL };
 int connected_users;
+int max_index = -1;
 
 //generate index
 //name to index
@@ -43,6 +44,13 @@ void * connection_handler(void * context) //STRUCT DE CONTEXTO = socket_desc
 
     t_user * new_user = create_user(connection_fd);
     add_user(user_list, new_user, user_index);
+
+    printf("CREO UN USER CON TI %d\n",user_index);
+
+    if (user_index > max_index){
+        max_index = user_index;
+        printf("%d MAXINDEX y %d USERINDEX\n", max_index, user_index );
+    }
 
     while (1){ 
 

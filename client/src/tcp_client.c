@@ -7,6 +7,7 @@ extern int maxfd;
 extern t_buffer * client_send_buffer;
 extern t_buffer * client_recv_buffer;
 extern connection_info server_info;
+extern int logged;
 
 typedef enum _packet_id{ 
  LOGIN,               
@@ -64,6 +65,7 @@ void write_login(char * username, char * password, char color){
 
     maxfd = client_connection_id;
     FD_SET(client_connection_id, &fds);
+    logged =1;
 
     write_byte(client_send_buffer, LOGIN);
     write_string(client_send_buffer, username);
@@ -90,6 +92,7 @@ void write_register(char * username, char * password){
 
     maxfd = client_connection_id;
     FD_SET(client_connection_id, &fds);
+    logged =1;
 
 
     write_byte(client_send_buffer, REGISTER_USER);
@@ -115,11 +118,13 @@ void write_delete(){
 }
 
 void write_talk(char * mensaje){
-	
-   if (client_connection_id <= 0){
-    printf(RED "%s\n" RESET_COLOR, "No estás conectado."); //sacar los espacios
-    return;
+	 
+   
+   if (!logged){
+      printf(RED "%s\n" RESET_COLOR, "No estás conectado."); //sacar los espacios
+      return;
    }
+
 
    write_byte(client_send_buffer, TALK);
    write_string(client_send_buffer, mensaje);
@@ -219,12 +224,16 @@ void write_disconnect(){
 
 }
 
+
 void handle_disconnect(){
 
-
-   client_connection_id = 0;
-   //clean_buffer(client_send_buffer);
-   //clean_buffer(client_recv_buffer);
+     maxfd = 0;
+     client_connection_id = 0;
+     FD_ZERO(&fds);
+     FD_SET(0, &fds);
+     logged=0;
+     clean_buffer(client_send_buffer);
+     clean_buffer(client_recv_buffer);
 
 
 }

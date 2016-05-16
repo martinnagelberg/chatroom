@@ -20,7 +20,7 @@ int db_create() {
 
     if (rc) {
         fprintf(stderr, "Can't open DB file: %s\n", sqlite3_errmsg(db));
-        log_error(ERROR, "Could not open DB file\n");
+        log_error(ERROR, "Could not open DB file");
     }
     else {
         printf("--> Creating USERS and CHATLOG tables ... ");
@@ -78,7 +78,7 @@ int is_db_initiated() {
 
     if (rc != SQLITE_OK) {
         fprintf(stderr, "--> Can't open DB file: %s\n", sqlite3_errmsg(db));
-        log_error(WARNING, "Could not open DB file\n");
+        log_error(WARNING, "Could not open DB file");
     }
     else {
         sprintf(sql, "SELECT USERNAME FROM USERS WHERE ID = 1");
@@ -122,7 +122,7 @@ int register_user(char* username, char* password) {
         rc = sqlite3_open(DB_FILE, &db);
 
         if (rc) {
-            log_error(ERROR, "Could not open DB file\n");
+            log_error(ERROR, "Could not open DB file");
         }
         else {
             sprintf(sql, "INSERT INTO USERS(USERNAME, PASSWORD, DATE_CREATED) VALUES ('%s', '%s', datetime('now', 'localtime'));", username, password);
@@ -160,14 +160,14 @@ int update_privileges(char* username, char privilege) {
     rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
-        log_error(ERROR, "Could not open DB file\n");
+        log_error(ERROR, "Could not open DB file");
     }
     else {
 		sprintf(sql, "UPDATE USERS SET PRIVILEGES = %d WHERE USERNAME = '%s';", (int)privilege, username);
 		rc = sqlite3_exec(db, sql, NULL, 0, &errMsg);
 		
 		if (rc != SQLITE_OK) {
-			log_error(ERROR, "Could not modify the privileges\n");
+			log_error(ERROR, "Could not modify the privileges");
 			sqlite3_free(errMsg);
 		}
 		sqlite3_close(db);
@@ -194,7 +194,7 @@ int set_user_banned(char* username, char flag) {
 
 		rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 		if (rc != SQLITE_OK) {
-			log_error(ERROR, "Could not modify the privileges.\n");
+			log_error(ERROR, "Could not modify the privileges.");
 			sqlite3_free(errMsg);
 		}
 		sqlite3_close(db);
@@ -222,7 +222,7 @@ int change_password(char* username, char* password) {
 
 		rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 		if (rc != SQLITE_OK) {
-			log_error(ERROR, "Could not modify the password.\n");
+			log_error(ERROR, "Could not modify the password.");
 			sqlite3_free(errMsg);
 		}
 		sqlite3_close(db);
@@ -243,14 +243,14 @@ int delete_username(char * username) {
     rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
-        log_error(ERROR, "Could not open DB file\n");
+        log_error(ERROR, "Could not open DB file");
     }
     else {
 		sprintf(sql, "DELETE FROM USERS WHERE USERNAME = '%s';", username);
 
 		rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 		if (rc != SQLITE_OK) {
-			log_error(ERROR, "Could not delete that username\n");
+			log_error(ERROR, "Could not delete that username");
 			sqlite3_free(errMsg);
 		}
 		sqlite3_close(db);
@@ -284,7 +284,7 @@ int get_chatlog(char* from, char* to, char** chatlog) {
 
 		if (rc != SQLITE_OK) {
 			fprintf(stderr, "Couldn't get the logs you wanted. Error: %s\nErr Code: %d\n", errMsg, rc);
-			log_error(ERROR, "Could not get the chatlog from the DB\n");
+			log_error(ERROR, "Could not get the chatlog from the DB");
 			sqlite3_free(errMsg);
 		}
 		sqlite3_close(db);
@@ -324,14 +324,15 @@ int insert_chatlog(char * username, char * message) {
     rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
-        log_error(ERROR, "Could not open DB file\n");
+        log_error(ERROR, "Could not open DB file");
     }
     else {
 		sprintf(sql, "INSERT INTO CHATLOG(USER_ID, DATE_TIME, MESSAGE) VALUES ((SELECT ID FROM USERS WHERE USERNAME = '%s'), datetime('now', 'localtime'), '%s');", username, message);
 
 		rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 		if (rc != SQLITE_OK) {
-			log_error(ERROR, "Could not log the chatlog into the DB\n");
+            
+			log_error(ERROR, "Could not log the chatlog into the DB");
 			sqlite3_free(errMsg);
 		}
 		sqlite3_close(db);
@@ -351,7 +352,7 @@ int login(char* username, char* password, Login_info* login_info) {
     rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
-        log_error(ERROR, "Could not open DB file\n");
+        log_error(ERROR, "Could not open DB file");
     } else {
         //Search for the user and pw in the DB
         sprintf(sql, "SELECT USERNAME, PASSWORD, PRIVILEGES, BANNED_FLAG " \
@@ -365,7 +366,7 @@ int login(char* username, char* password, Login_info* login_info) {
         rc = sqlite3_exec(db, sql, login_callback, (void*)login_info, &errMsg);
 
         if (rc != SQLITE_OK) {
-            log_error(ERROR, "Could not make your request at the time.\n");
+            log_error(ERROR, "Could not make your request at the time.");
             sqlite3_free(errMsg);
         }
         else if (login_info->login_status == LOGIN_STATUS_FAIL)
@@ -377,7 +378,7 @@ int login(char* username, char* password, Login_info* login_info) {
             sprintf(sql, "UPDATE USERS SET LAST_LOGIN = datetime('now', 'localtime') WHERE USERNAME = '%s';", login_info->username);
 
             if (sqlite3_exec(db, sql, 0, 0, &errMsg) != SQLITE_OK) {
-				log_error(WARNING, "Could not update the last lastime the user logged.\n");
+				log_error(WARNING, "Could not update the last lastime the user logged.");
                 sqlite3_free(errMsg);
             }
 

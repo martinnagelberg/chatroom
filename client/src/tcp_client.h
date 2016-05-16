@@ -41,5 +41,7 @@ void handle_disconnect();
 
 void write_check_logs(char * from, char * to);
 
+void write_get_online_users();
+
 
 #endif

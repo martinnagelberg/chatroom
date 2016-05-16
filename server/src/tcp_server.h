@@ -34,5 +34,7 @@ void write_disconnect(int target_index);
 
 void handle_check_logs(int user_index);
 
+void handle_users_online(int user_index);
+
 
 #endif

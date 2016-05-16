@@ -20,7 +20,7 @@ int main(void)
     int msqid;
     key_t key = 123;
 
-    if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1) { 
+    if ((msqid = msgget(key, (IPC_CREAT | IPC_EXCL | 0666))) == -1) { 
         perror("Error while trying to create MQ");
         return -1;
     }

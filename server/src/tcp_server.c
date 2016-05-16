@@ -5,6 +5,8 @@
 #define SERVER_COLOR 1
 #define ERROR_COLOR 0
 #define DEFAULT_COLOR 6
+#define AUX_BUFFER_SIZE 128
+#define MAIN_BUFFER_SIZE 30
 
 
 typedef enum _packet_id{ //comando para admin : kILL server
@@ -17,7 +19,8 @@ typedef enum _packet_id{ //comando para admin : kILL server
 	KICK,
 	BAN,
 	DISCONNECT,
-	CHECK_LOGS
+	CHECK_LOGS,
+	USERS_ONLINE
 } packet_id;
 
 extern t_user * user_list[MAX_USERS];
@@ -34,6 +37,12 @@ int name_to_index(char * name){
     }
 
     return -1;
+}
+
+int user_already_online(char * username){
+
+	return (name_to_index(username) != -1);
+
 }
 
 void handle_tcp_packets(int user_index){
@@ -82,6 +91,10 @@ void handle_tcp_packets(int user_index){
         case CHECK_LOGS:
         	handle_check_logs(user_index);
         	break;
+
+        case USERS_ONLINE:
+        	handle_users_online(user_index);
+        	break;
         
     }
 
@@ -97,7 +110,7 @@ void server_login(int user_index, char * username, char color, char privileges){
 	user_list[user_index]->privileges = privileges;
 	user_list[user_index]->logged = 1;
 
-	char aux_buffer[75];
+	char aux_buffer[AUX_BUFFER_SIZE];
 	sprintf(aux_buffer, "Servidor>> Se conectó %s a la sala.", username);
 
 	for (int i = 0; i < connected_users; i++){
@@ -112,7 +125,7 @@ void server_login(int user_index, char * username, char color, char privileges){
 
 void handle_login(int user_index){
 
-	char username [30], password [30];
+	char username [MAIN_BUFFER_SIZE], password [MAIN_BUFFER_SIZE];
 	BYTE color;
 	Login_info log_info;
 
@@ -135,16 +148,21 @@ void handle_login(int user_index){
 		return;
 	}
 
-	char aux_buff [30];
+	char aux_buff [AUX_BUFFER_SIZE];
 
-	if (log_info.privileges == 1){
+	if (log_info.privileges == USER_MOD){
 		sprintf(aux_buff,"+%s", username);
-	}else if (log_info.privileges == 2) {
+	}else if (log_info.privileges == USER_ADMIN) {
 		sprintf(aux_buff,"*%s", username);
 	}else{
 		sprintf(aux_buff,"%s", username);
 	}
 
+	if ((user_already_online(aux_buff))){
+		write_talk(user_index, "Ese usuario ya está logeado.", ERROR_COLOR);
+		write_disconnect(user_index);
+		return;
+	}
 
 	server_login(user_index, aux_buff, color, log_info.privileges);
 
@@ -155,7 +173,7 @@ void handle_login(int user_index){
 
 void handle_register(int user_index) {
 
-	char username [30], password [30];
+	char username [MAIN_BUFFER_SIZE], password [MAIN_BUFFER_SIZE];
 
 	read_string(user_list[user_index]->recv_buffer, username); 
 	read_string(user_list[user_index]->recv_buffer, password);
@@ -184,7 +202,7 @@ void handle_delete(int user_index){
 
 void handle_talk(int user_index){ //user index es el ejecutante. target a quien se lo mando.
 
-	char message[40], data[40];
+	char message[AUX_BUFFER_SIZE], data[AUX_BUFFER_SIZE];
 	int color = user_list[user_index]->color;
 
 	read_string(user_list[user_index]->recv_buffer, data);
@@ -219,7 +237,7 @@ void handle_change_color(int user_index){
 
 void handle_change_pw(int user_index){
 
-	char new_password [30];
+	char new_password [MAIN_BUFFER_SIZE];
 
 	read_string(user_list[user_index]->recv_buffer, new_password); 
 
@@ -232,12 +250,12 @@ void handle_change_pw(int user_index){
 
 void handle_kick(int user_index){
 
-	char username [30], reason [128], aux_buff [256];
+	char username [MAIN_BUFFER_SIZE], reason [AUX_BUFFER_SIZE], aux_buff [AUX_BUFFER_SIZE * 2];
 
 	read_string(user_list[user_index]->recv_buffer, username); 
 	read_string(user_list[user_index]->recv_buffer, reason); 
 
-	if (user_list[user_index]->privileges < 1){
+	if (user_list[user_index]->privileges < USER_MOD){
 		write_talk(user_index, "No tenés suficientes privilegios.", ERROR_COLOR);
 		return;
 	}
@@ -253,12 +271,12 @@ void handle_kick(int user_index){
 
 void handle_ban(int user_index){
 
-	char username [30], reason [128], aux_buff [256];
+	char username [MAIN_BUFFER_SIZE], reason [AUX_BUFFER_SIZE], aux_buff [AUX_BUFFER_SIZE * 2];
 
 	read_string(user_list[user_index]->recv_buffer, username); 
 	read_string(user_list[user_index]->recv_buffer, reason); 
 
-	if (user_list[user_index]->privileges < 2){
+	if (user_list[user_index]->privileges < USER_ADMIN){
 		write_talk(user_index, "No tenés suficientes privilegios.", ERROR_COLOR);
 		return;
 	}
@@ -276,6 +294,7 @@ void handle_ban(int user_index){
 
 // log_error(INFO, "User left");
 void handle_disconnect(int user_index){
+
 
 	write_talk(user_index, "Hasta la proxima...", SERVER_COLOR);
 	write_disconnect(user_index);
@@ -312,7 +331,7 @@ void write_disconnect(int user_index){
 
 void handle_check_logs(int user_index){
 
-	char from [30], to [30];
+	char from [AUX_BUFFER_SIZE], to [AUX_BUFFER_SIZE];
 
 	read_string(user_list[user_index]->recv_buffer, from); 
 	read_string(user_list[user_index]->recv_buffer, to); 
@@ -321,4 +340,25 @@ void handle_check_logs(int user_index){
 
 
 }
+
+void handle_users_online(int user_index){
+
+	char * init_string = "Usuarios online: ";
+	char aux_buffer[(MAIN_BUFFER_SIZE * connected_users) + strlen(init_string)+1];
+	
+	strcpy(aux_buffer, init_string);
+
+	for (int i=0; i < connected_users; i++){
+
+		strcat(aux_buffer, user_list[i]->name);
+
+	}
+
+	printf("Resultado: %s\n", aux_buffer);
+
+	write_talk(user_index, aux_buffer, SERVER_COLOR);
+
+}
+
+
 

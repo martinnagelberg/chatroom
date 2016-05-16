@@ -18,7 +18,8 @@ typedef enum _packet_id{
  KICK,
  BAN,
  DISCONNECT,
- CHECK_LOGS
+ CHECK_LOGS,
+ USERS_ONLINE
 } packet_id;
 
 char *c_colors[] = {RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE};
@@ -35,7 +36,6 @@ void handle_tcp_packets(){
         case TALK:
             handle_talk();
             break;
-
 
         case DISCONNECT:
             handle_disconnect();
@@ -241,5 +241,18 @@ void write_check_logs(char * from, char * to){
    write_string(client_send_buffer, to);
 
    flush_buffer(client_connection_id, client_send_buffer);
+
+}
+
+void write_get_online_users(){
+
+    if (client_connection_id <= 0){
+        printf(RED "No estás conectado.\n" RESET_COLOR);
+        return;
+    }
+
+    write_byte(client_send_buffer, USERS_ONLINE);
+
+    flush_buffer(client_connection_id, client_send_buffer);
 
 }

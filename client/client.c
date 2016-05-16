@@ -11,6 +11,8 @@
 #include <sys/select.h>
 #include <unistd.h>
 
+#define STDIN_BUFFER_SIZE 256
+
 int client_connection_id;
 int run;
 fd_set fds;
@@ -74,7 +76,7 @@ int main(int argc , char *argv[])
 
         if (FD_ISSET(0, &fds)){
 
-   			fgets(user_input, 256, stdin);
+   			fgets(user_input, STDIN_BUFFER_SIZE, stdin);
    			
    			if (*user_input == '\n')
 				continue;

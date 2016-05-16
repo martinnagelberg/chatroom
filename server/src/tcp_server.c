@@ -169,7 +169,7 @@ void handle_register(int user_index) {
 	server_login(user_index, username, DEFAULT_COLOR, USER_NORMAL);
 
 
-	write_talk(user_index, WELCOME_MSG, SERVER_COLOR); //TODO ENCAPSULAR ESTO EN UNA FUNCION DE LOGIN QUE LLAME AL HANDLE LOGIN.
+	write_talk(user_index, WELCOME_MSG, SERVER_COLOR);
 }
 
 void handle_delete(int user_index){
@@ -226,7 +226,6 @@ void handle_change_pw(int user_index){
 	change_password(user_list[user_index]->name, new_password);
 
 	write_talk(user_index, "Contraseña cambiada satisfactoriamente.", SERVER_COLOR);
-	//llamar a la db para cambiar clave solo si la old es correcta.
 
 
 }

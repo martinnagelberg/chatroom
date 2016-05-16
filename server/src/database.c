@@ -1,9 +1,6 @@
 #include "database.h"
 #include "logging.h"
 
-//AGREGAR SERIALIZE CHAR PARA PACKET ID
-
-int callback(void* NotUsed, int argc, char** argv, char** column_name);
 int login_callback(void* user_login_info, int argc, char** argv, char** column_name);
 int get_chatlog_callback(void* chatlog_ptr, int argc, char** argv, char** column_name);
 
@@ -167,7 +164,7 @@ int update_privileges(char* username, char privilege) {
     }
     else {
 		sprintf(sql, "UPDATE USERS SET PRIVILEGES = %d WHERE USERNAME = '%s';", (int)privilege, username);
-		rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
+		rc = sqlite3_exec(db, sql, NULL, 0, &errMsg);
 		
 		if (rc != SQLITE_OK) {
 			log_error(ERROR, "Could not modify the privileges\n");

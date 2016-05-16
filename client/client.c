@@ -21,6 +21,8 @@ t_buffer * client_send_buffer;
 t_buffer * client_recv_buffer;
 connection_info server_info;
 
+void show_help();
+
 //select en cliente.
 //sacar los gccextras para que no tire warnings el clang. Del o:c
 //errpres con rojo.
@@ -101,7 +103,7 @@ int main(int argc , char *argv[])
 					write_change_pw(arg1);
 					break;
 				case CMD_CH_PRIVS:
-					//write_change_privileges(arg1, arg2); IMPLEMENTAR (usuario, privilegio)
+					write_change_privileges(arg1, (unsigned char)(*arg2 - '0'));
 					break;
 				case CMD_CH_COLOR:
 					write_change_color((unsigned char)(*arg1 - '0'));
@@ -118,8 +120,11 @@ int main(int argc , char *argv[])
 				case CMD_GET_ONLINE_USERS:
 					write_get_online_users();
 					break;
+				case CMD_HELP:
+					show_help();
+					break;
 				case CMD_ERROR:
-					fprintf(stderr, "Algo se rompió vieja...\n");
+					fprintf(stderr, "Comando no reconocido. Escriba /help para ver la lista de comandos...\n");
 					break;				
 			}
 			
@@ -153,4 +158,19 @@ int main(int argc , char *argv[])
     deinit_client();
      
     return 0;
+}
+
+void show_help() {
+	printf("\nFunciones fuera del chat:\n");
+	printf("--> /login usuario contraseña\n");
+	printf("--> /register usuario contraseña\n\n");
+	printf("Funciones dentro del chat:\n");
+	printf("--> /change_password contraseña_nueva\n");
+	printf("--> /change_color color\n");
+	printf("--> /change_privileges usuario privilegios_nuevos\n");
+	printf("--> /delete\n");
+	printf("--> /get_online_users\n");
+	printf("--> /kick usuario 'razon'\n");
+	printf("--> /ban usuario 'razon'\n");
+	printf("--> /logout\n\n");
 }

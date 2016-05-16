@@ -16,6 +16,7 @@ typedef enum _packet_id{ //comando para admin : kILL server
 	TALK,
 	CHANGE_COLOR,
 	CHANGE_PW,
+	CHANGE_PRIVS,
 	KICK,
 	BAN,
 	DISCONNECT,
@@ -74,6 +75,10 @@ void handle_tcp_packets(int user_index){
         case CHANGE_PW:
         	handle_change_pw(user_index);
         	break;
+        
+        case CHANGE_PRIVS:
+			handle_change_privs(user_index);
+			break;
 
         case KICK:
         	handle_kick(user_index);
@@ -203,6 +208,67 @@ void handle_delete(int user_index){
 	write_disconnect(user_index);
 	log_error(INFO, "Usuario desconectado.");
 
+}
+
+void handle_change_privs(int user_index) {
+	char username[MAIN_BUFFER_SIZE];
+	//char* new_name = NULL;
+	//char aux_buff[AUX_BUFFER_SIZE];
+	BYTE new_privilege;
+	
+	read_string(user_list[user_index]->recv_buffer, username);
+	read_byte(user_list[user_index]->recv_buffer, &new_privilege);
+	
+	printf("New privilege: %d\nUser privilege: %d\n", new_privilege, user_list[user_index]->privileges);
+	
+	if (user_list[user_index]->privileges == 1) {
+		write_talk(user_index, "Usted no tiene permisos para cambiar privilegios de usuarios.", ERROR_COLOR);
+		log_error(WARNING, "Intento cambiar permisos siendo USER_NORMAL.");
+		//printf("1\n");
+		return;
+	}
+	else if (user_list[user_index]->privileges < new_privilege) {
+		write_talk(user_index, "Usted no tiene suficientes permisos para realizar esa acción.", ERROR_COLOR);
+		log_error(WARNING, "Intentó cambiar permisos sin tener suficiente acceso.");
+		//printf("2\n");
+		return;
+	}
+	//printf("3\n");
+
+	if(update_privileges(username, new_privilege))
+		write_talk(user_index, "Por alguna razon no se lograron cambiar los privilegios.", ERROR_COLOR);
+	/*else {	//queria que el cambio se haga en el momento con el user loggeado, pero esta tirando seg_fault
+		if (new_privilege == 0) {
+			new_name = malloc(sizeof(char) * strlen(username));
+			strcpy(new_name, username);
+			printf("1\n");
+		}
+		else {
+			new_name = malloc(sizeof(char) * (strlen(username) + 1));
+			*(new_name+1) = '\0';
+			printf("2\n");
+			if (new_privilege == 1)
+				*new_name = '+';
+			else if (new_privilege == 2)
+				*new_name = '*';
+			strcpy(new_name+1, username);
+		}
+		printf("3\n");
+		
+		int target_index = name_to_index(username);
+		sprintf(aux_buff, "Servidor>> %s --> %s", user_list[target_index]->name, new_name);
+		printf("%s\n", aux_buff);
+		
+		printf("a\n");
+		for (int i = 0; i < connected_users ; i++)
+			write_talk(i, aux_buff, SERVER_COLOR);
+		
+		printf("4\n");
+		free(user_list[target_index]->name);
+		user_list[target_index]->name = new_name;
+		
+		write_talk(user_index, "Los privilegios del usuario se cambiaron con éxito.", SERVER_COLOR);
+	}*/
 }
 
 void handle_talk(int user_index){ //user index es el ejecutante. target a quien se lo mando.

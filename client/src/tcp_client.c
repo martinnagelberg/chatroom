@@ -15,6 +15,7 @@ typedef enum _packet_id{
  TALK,
  CHANGE_COLOR,
  CHANGE_PW,
+ CHANGE_PRIVS,
  KICK,
  BAN,
  DISCONNECT,
@@ -232,8 +233,8 @@ void write_check_logs(char * from, char * to){
 
 
    if (client_connection_id <= 0){
-    printf(RED "No estás conectado.\n" RESET_COLOR);
-    return;
+		printf(RED "No estás conectado.\n" RESET_COLOR);
+		return;
    }
 
    write_byte(client_send_buffer, CHECK_LOGS);
@@ -244,8 +245,17 @@ void write_check_logs(char * from, char * to){
 
 }
 
-void write_change_privileges(arg1, arg2) {
+void write_change_privileges(char* username, BYTE priv) {
 	
+	if (client_connection_id <= 0){
+		printf(RED "No estás conectado.\n" RESET_COLOR);
+		return;
+   }
+   write_byte(client_send_buffer, CHANGE_PRIVS);
+   write_string(client_send_buffer, username);
+   write_byte(client_send_buffer, priv);
+   
+   flush_buffer(client_connection_id, client_send_buffer);
 }
 
 void write_get_online_users(){

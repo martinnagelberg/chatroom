@@ -1,7 +1,7 @@
 #include "parser.h"
 
-static char* all_cmds[] = {"login", "register", "logout", "change_password", "change_privileges", "change_color", "delete", "kick", "ban", "get_online_users"};
-static int cmds_amount = 10;
+static char* all_cmds[] = {"login", "register", "logout", "change_password", "change_privileges", "change_color", "delete", "kick", "ban", "get_online_users", "help"};
+static int cmds_amount = 11;
 
 void del_spaces(char* str);
 void separate_args(char* str);
@@ -135,6 +135,13 @@ int parse_cmd(char* msg, char** arg1, char** arg2) {
 						break;
 					}
 					return CMD_GET_ONLINE_USERS;
+				case 10:	//help
+					if (arg1_length != 0) {
+						fprintf(stderr, FAILED_GET_ONLINE_USERS);
+						j = cmds_amount;
+						break;
+					}
+					return CMD_HELP;
 			}
 		}
 	return CMD_ERROR;
@@ -165,14 +172,18 @@ void del_spaces(char* str){
 }
 
 /**
- * Reemplaza el char c1 por c2 en todo un string.
+ * Separo mis argumentos de mi mensaje
  */
  void separate_args(char* str) {
+	 int true = 0;
 	 while (*str != '\0') {
 		if (*str == '\'' || *str == '\"') {
-			str++;
-			while (*str != '\'' && *str == '\"' && *str != '\0')
+			true = 1;
+			do {
 				str++;
+				if (*str == '\'' || *str == '\"' || *str == '\0')
+					true = 0;
+			} while (true);
 		}
 		if (*str == ' ') {
 			*str = '\0';

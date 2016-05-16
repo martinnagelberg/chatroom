@@ -28,6 +28,7 @@
 #define CMD_BAN 8
 #define CMD_LOGOUT 9
 #define CMD_GET_ONLINE_USERS 10
+#define CMD_HELP 11
 
 int parse_cmd(char* msg, char** arg1, char** arg2);
 

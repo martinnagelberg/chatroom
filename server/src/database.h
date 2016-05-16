@@ -18,6 +18,7 @@
 #define ERROR_PARAM_SIZE 102 //username or pw too long
 #define ERROR_USER_OR_PW_INCORRECT 103
 #define ERROR_USER_BANNED 104
+#define ERROR_NOT_UPDATED 105
 
 #define USER_NORMAL 0
 #define USER_MOD 1

@@ -45,6 +45,7 @@ void handle_tcp_packets(){
     BYTE p_id;
 
     read_byte(client_recv_buffer, &p_id);
+    printf("Me llega el pacquete %d\n",p_id );
 
     switch (p_id){
 
@@ -230,8 +231,9 @@ void handle_disconnect(){
 
 
    client_connection_id = 0;
-   clean_buffer(client_send_buffer);
-   clean_buffer(client_recv_buffer);
+   run = 0;
+   //clean_buffer(client_send_buffer);
+   //clean_buffer(client_recv_buffer);
 
 
 }

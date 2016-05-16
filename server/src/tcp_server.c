@@ -28,7 +28,6 @@ extern int connected_users;
 
 int name_to_index(char * name){
 
-
     for (int i = 0; i < connected_users; i++){
 
         if (strcmp(user_list[i]->name, name) == 0){
@@ -98,9 +97,6 @@ void handle_tcp_packets(int user_index){
         
     }
 
-
-
-
 }
 
 void server_login(int user_index, char * username, char color, char privileges){
@@ -129,7 +125,6 @@ void handle_login(int user_index){
 	BYTE color;
 	Login_info log_info;
 
-
 	read_string(user_list[user_index]->recv_buffer, username); 
 	read_string(user_list[user_index]->recv_buffer, password); 
 	read_byte(user_list[user_index]->recv_buffer, &color);
@@ -139,12 +134,18 @@ void handle_login(int user_index){
 
 	if (ret_val != QUERY_OK){
 
-		if(ret_val == ERROR_USER_OR_PW_INCORRECT)
+		if(ret_val == ERROR_USER_OR_PW_INCORRECT) {
 			write_talk(user_index, "Usuario o contraseña inválidos.", ERROR_COLOR);
-		else if (ret_val == ERROR_USER_BANNED)
+			log_error(WARNING, "Usuario o contraseña inválidos.");
+		}
+
+		else if (ret_val == ERROR_USER_BANNED){
 			write_talk(user_index, "Usuario baneado.", ERROR_COLOR);
+			log_error(WARNING, "Usuario baneado.");
+		}
 
 		write_disconnect(user_index);
+		log_error(INFO, "Usuario desconectado.");
 		return;
 	}
 
@@ -160,7 +161,9 @@ void handle_login(int user_index){
 
 	if ((user_already_online(aux_buff))){
 		write_talk(user_index, "Ese usuario ya está logeado.", ERROR_COLOR);
+		log_error(WARNING, "Usuario ya logueado.");
 		write_disconnect(user_index);
+		log_error(INFO, "Usuario desconectado.");
 		return;
 	}
 
@@ -180,7 +183,9 @@ void handle_register(int user_index) {
 
 	if(register_user(username, password) == ERROR_USER_ALREADY_REGISTERED){
 		write_talk(user_index, "Usuario ya existente.", ERROR_COLOR);
+		log_error(WARNING, "Usuario ya existente.");
 		write_disconnect(user_index);
+		log_error(INFO, "Usuario desconectado.");
 		return;
 	}
 
@@ -192,11 +197,11 @@ void handle_register(int user_index) {
 
 void handle_delete(int user_index){
 
-	
 	delete_username(user_list[user_index]->name);
 	write_talk(user_index, "Tu usuario fue borrado con éxito", SERVER_COLOR);
+	log_error(INFO, "Usuario fue borrado con éxito.");
 	write_disconnect(user_index);
-
+	log_error(INFO, "Usuario desconectado.");
 
 }
 
@@ -229,9 +234,7 @@ void write_talk(int target_index, char * message, int color){
 
 void handle_change_color(int user_index){
 
-
 	read_byte(user_list[user_index]->recv_buffer, &(user_list[user_index]->color));
-
 
 }
 
@@ -244,7 +247,7 @@ void handle_change_pw(int user_index){
 	change_password(user_list[user_index]->name, new_password);
 
 	write_talk(user_index, "Contraseña cambiada satisfactoriamente.", SERVER_COLOR);
-
+	log_error(INFO, "Contraseña cambiada satisfactoriamente.");
 
 }
 
@@ -257,6 +260,7 @@ void handle_kick(int user_index){
 
 	if (user_list[user_index]->privileges < USER_MOD){
 		write_talk(user_index, "No tenés suficientes privilegios.", ERROR_COLOR);
+		log_error(WARNING, "El usuario no tiene suficientes privilegios.");
 		return;
 	}
 
@@ -265,7 +269,6 @@ void handle_kick(int user_index){
 	int target_index = name_to_index(username);
 	write_talk(target_index, aux_buff, SERVER_COLOR);
 	handle_disconnect(target_index);
-
 
 }
 
@@ -278,6 +281,7 @@ void handle_ban(int user_index){
 
 	if (user_list[user_index]->privileges < USER_ADMIN){
 		write_talk(user_index, "No tenés suficientes privilegios.", ERROR_COLOR);
+		log_error(WARNING, "El usuario no tiene suficientes privilegios.");
 		return;
 	}
 
@@ -288,26 +292,26 @@ void handle_ban(int user_index){
 	set_user_banned(username, 1);
 	write_talk(target_index, aux_buff, SERVER_COLOR);
 	write_disconnect(target_index);
-
+	log_error(INFO, "Usuario desconectado.");
 
 }
 
 // log_error(INFO, "User left");
 void handle_disconnect(int user_index){
 
-
 	write_talk(user_index, "Hasta la proxima...", SERVER_COLOR);
 	write_disconnect(user_index);
+	log_error(INFO, "Usuario desconectado.");
 
 }
 
 void write_disconnect(int user_index){
 
-
 	write_byte(user_list[user_index]->send_buffer, DISCONNECT);
 	flush_buffer(user_list[user_index]->connection_descriptor, user_list[user_index]->send_buffer);
 
 	disconnect(user_list[user_index]->connection_descriptor);
+
 	user_list[user_index]->connection_descriptor = -1;
 	
 	if (user_list[user_index]->logged){
@@ -335,9 +339,6 @@ void handle_check_logs(int user_index){
 
 	read_string(user_list[user_index]->recv_buffer, from); 
 	read_string(user_list[user_index]->recv_buffer, to); 
-
-	//acceso a db
-
 
 }
 

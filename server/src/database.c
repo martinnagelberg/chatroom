@@ -3,7 +3,6 @@
 
 //AGREGAR SERIALIZE CHAR PARA PACKET ID
 
-const char* db_file = "chatroom.db";
 int callback(void* NotUsed, int argc, char** argv, char** column_name);
 int login_callback(void* user_login_info, int argc, char** argv, char** column_name);
 int get_chatlog_callback(void* chatlog_ptr, int argc, char** argv, char** column_name);
@@ -56,8 +55,8 @@ int db_create() {
 
     printf("Trying to create new chatroom database.\n");
 
-    printf("--> DB path: %s\n", db_file);
-    rc = sqlite3_open(db_file, &db);
+    printf("--> DB path: %s\n", DB_FILE);
+    rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
         fprintf(stderr, "Can't open DB file: %s\n", sqlite3_errmsg(db));
@@ -115,7 +114,7 @@ int is_db_initiated() {
     char sql[256];
     char* errMsg = 0;
 
-    rc = sqlite3_open(db_file, &db);
+    rc = sqlite3_open(DB_FILE, &db);
 
     if (rc != SQLITE_OK) {
         fprintf(stderr, "--> Can't open DB file: %s\n", sqlite3_errmsg(db));
@@ -160,7 +159,7 @@ int register_user(char* username, char* password) {
     if (strlen(username) > SIZE_USERNAME || strlen(password) > SIZE_PASSWORD)
         rc = ERROR_PARAM_SIZE;
     else {
-        rc = sqlite3_open(db_file, &db);
+        rc = sqlite3_open(DB_FILE, &db);
 
         if (rc) {
             log_error(ERROR, "Could not open DB file\n");
@@ -198,7 +197,7 @@ int update_privileges(char* username, char privilege) {
     char sql[128];
     char* errMsg = 0;
 
-    rc = sqlite3_open(db_file, &db);
+    rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
         log_error(ERROR, "Could not open DB file\n");
@@ -225,7 +224,7 @@ int set_user_banned(char* username, char flag) {
     char sql[96];
     char* errMsg = 0;
 
-    rc = sqlite3_open(db_file, &db);
+    rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
         log_error(ERROR, "Could not open DB file\n");
@@ -253,7 +252,7 @@ int change_password(char* username, char* password) {
     char sql[128];
     char* errMsg = 0;
 
-    rc = sqlite3_open(db_file, &db);
+    rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
         log_error(ERROR, "Could not open DB file\n");
@@ -281,7 +280,7 @@ int delete_username(char * username) {
     char sql[64];
     char* errMsg = 0;
 
-    rc = sqlite3_open(db_file, &db);
+    rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
         log_error(ERROR, "Could not open DB file\n");
@@ -311,7 +310,7 @@ int get_chatlog(char* from, char* to, char** chatlog) {
     char sql[256];
     char* errMsg = 0;
 
-    rc = sqlite3_open(db_file, &db);
+    rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
         log_error(ERROR, "Could not open DB file\n");
@@ -362,18 +361,16 @@ int insert_chatlog(char * username, char * message) {
     char sql[160];
     char* errMsg = 0;
 
-    rc = sqlite3_open(db_file, &db);
+    rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
         log_error(ERROR, "Could not open DB file\n");
-        fprintf(stderr, "No se pudo abrir la DB. Razon: %s\n");
     }
     else {
 		sprintf(sql, "INSERT INTO CHATLOG(USER_ID, DATE_TIME, MESSAGE) VALUES ((SELECT ID FROM USERS WHERE USERNAME = '%s'), datetime('now', 'localtime'), '%s');", username, message);
 
 		rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 		if (rc != SQLITE_OK) {
-			fprintf(stderr, "No se pudo ejecutar la query. Razon: %s\n", errMsg);
 			log_error(ERROR, "Could not log the chatlog into the DB\n");
 			sqlite3_free(errMsg);
 		}
@@ -391,7 +388,7 @@ int login(char* username, char* password, Login_info* login_info) {
     char sql[160];
     char* errMsg = 0;
 
-    rc = sqlite3_open(db_file, &db);
+    rc = sqlite3_open(DB_FILE, &db);
 
     if (rc) {
         log_error(ERROR, "Could not open DB file\n");

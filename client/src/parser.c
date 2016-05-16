@@ -71,8 +71,8 @@ int parse_cmd(char* msg, char** arg1, char** arg2) {
 					}
 					return CMD_LOGOUT;
 					
-				case 3:		//change_password old_pass new_pass
-					if (arg2_length == 0) {
+				case 3:		//change_password new_pass
+					if (arg1_length == 0 || arg2_length != 0) {
 						fprintf(stderr, FAILED_CHANGE_PASSWORD_MSG);
 						j = cmds_amount;
 						break;

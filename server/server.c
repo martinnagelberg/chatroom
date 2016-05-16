@@ -2,12 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
+#include <unistd.h>
 #include "comm.h"
 #include "error.h"
 #include "serialize.h"
 #include "logging.h"
 #include "user.h"
 #include "tcp_server.h"
+#include "database.h"
 
 
 #define MAX_USERS 100
@@ -98,7 +100,11 @@ int main(int argc , char * argv[]) {
 
     strcpy(server_info.ip, "127.0.0.1");
     server_info.port = 8888;
-    int run = 1; 
+    int run = 1;
+
+	if(access(DB_FILE, F_OK) == -1 ) {
+		db_create();
+	}
 
     listen_connections((void *)&server_info, server_main, &run); //manejo de errores
     

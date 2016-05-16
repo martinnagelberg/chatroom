@@ -8,11 +8,11 @@
 #define FAILED_LOGIN_MSG "Command syntax error. Correct format is: /login username password\n"
 #define FAILED_REGISTER_MSG "Command syntax error. Correct format is: /register username password\n"
 #define FAILED_DELETE_MSG "Command syntax error. Correct format is: /delete username\n"
-#define FAILED_CHANGE_COLOR_MSG "Command syntax error. Correct format is: /change_color color\n"
-#define FAILED_CHANGE_PASSWORD_MSG "Command syntax error. Correct format is: /change_password old_password new_password\n"
+#define FAILED_CHANGE_COLOR_MSG "Command syntax error. Correct format is: /change_color color (0 to 6)\n"
+#define FAILED_CHANGE_PASSWORD_MSG "Command syntax error. Correct format is: /change_password new_password\n"
 #define FAILED_CHANGE_PRIVILEGES_MSG "Command syntax error. Correct format is: /change_privileges username new_privileges\n"
-#define FAILED_KICK_MSG "Command syntax error. Correct format is: /login username reason\n"
-#define FAILED_BAN_MSG "Command syntax error. Correct format is: /login username reason\n"
+#define FAILED_KICK_MSG "Command syntax error. Correct format is: /kick username reason\n"
+#define FAILED_BAN_MSG "Command syntax error. Correct format is: /ban username reason\n"
 #define FAILED_LOGOUT_MSG "Command syntax error. Correct format is: /logout\n"
 
 #define CMD_ERROR 666

@@ -3,7 +3,19 @@
 
 #include "serialize.h"
 #include "comm.h"
+#include "error.h"
+#include <stdio.h>
+#include <string.h>
+#include <sys/select.h>
 
+#define RED "\x1b[31m"
+#define GREEN "\x1b[32m"
+#define YELLOW "\x1b[33m"
+#define BLUE "\x1b[34m"
+#define MAGENTA "\x1b[35m"
+#define CYAN "\x1b[36m"
+#define WHITE "\x1B[37m"
+#define RESET_COLOR "\033[0m"
 
 void handle_tcp_packets();
 

@@ -15,7 +15,7 @@ SOURCES= $(SOURCES_C) $(SOURCES_G) $(SOURCES_EXE) $(SOURCES_DB)
 EXE = server.bin
 GCC = gcc
 GCCFLAGS = -Wall -I./../libraries/includes -I./src 
-GCCEXTRAS = -lpthread -ldl
+GCCEXTRAS = -pthread -Wl,--no-as-needed -ldl
 MAIN_C = $(wildcard *.c)
 OBJECTS = $(SOURCES:.c=.o)
 
@@ -32,5 +32,6 @@ clean:
 	rm -rf $(EXE)
 	rm -rf /tmp/*_w
 	rm -rf /tmp/*_r
+	rm -rf ../libraries/libsocket/objects/*.o
 
 .PHONY: clean

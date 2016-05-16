@@ -6,6 +6,8 @@
 #include <string.h>
 #include "sqlite3/sqlite3.h"
 
+#define DB_FILE "chatroom.db"
+
 #define LOGIN_STATUS_SUCCESS 0
 #define LOGIN_STATUS_FAIL 1
 #define LOGIN_STATUS_BANNED 2

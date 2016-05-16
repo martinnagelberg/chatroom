@@ -53,8 +53,6 @@ int main(int argc , char *argv[])
     char user_input[256];
     char* arg1 = NULL;
     char* arg2 = NULL;
-	char username[30]; //IDEALMENTE NO TIENE QUE ESTAR ESTO
-	char password[30]; //IDEALMENTE NO TIENE QUE ESTAR ESTO
 	int cmd;
 
 	
@@ -76,7 +74,11 @@ int main(int argc , char *argv[])
 
         if (FD_ISSET(0, &fds)){
 
-   			fgets(user_input, 256, stdin); 
+   			fgets(user_input, 256, stdin);
+   			
+   			if (*user_input == '\n')
+				continue;
+   			
 			cmd = parse_cmd(user_input, &arg1, &arg2);
 			
             switch(cmd) {
@@ -86,8 +88,6 @@ int main(int argc , char *argv[])
 					break;
 				case CMD_LOGIN:
 					write_login(arg1, arg2, 5);
-					strcpy(username, arg1);	//ESTO NO DEBERIA GUARDARSE ACA
-					strcpy(password, arg2); //ESTO NO DEBERIA GUARDARSE ACA
 					break;
 				case CMD_REGISTER:
 					write_register(arg1, arg2);
@@ -105,7 +105,7 @@ int main(int argc , char *argv[])
 					write_change_color((unsigned char)(*arg1 - '0'));
 					break;
 				case CMD_DELETE_USER:
-					write_delete(arg1, password); 	//ver de no pasar la pass
+					write_delete();
 					break;
 				case CMD_KICK:
 					write_kick(arg1, arg2);

@@ -28,8 +28,11 @@ int connections_number;
 
 int _fd_to_index(int fd){
 
-    for (int i = 0; i <= MAX_CONNECTIONS; i++)
-        if (connections_list[i]->pipe_fd == fd) return i;
+    for (int i = MIN_CONN_FD; i < MAX_CONNECTIONS; i++){\
+        if (connections_list[i] != NULL){
+            if (connections_list[i]->pipe_fd == fd) return i;
+        }
+    }
 
     return -1;
 
@@ -37,7 +40,7 @@ int _fd_to_index(int fd){
 
 int _get_free_index(){
 
-    for(int i = MIN_CONN_FD; i <= connections_number + MIN_CONN_FD; i++)
+    for(int i = MIN_CONN_FD; i <= MAX_CONNECTIONS; i++)
         if (connections_list[i] == NULL) return i;
 
     return -1;
@@ -104,7 +107,7 @@ int _open_fifos(fifo_handler * fh, char * address, char listening){
     fh->file_desc_w = fdw;
     fh->file_desc_r = fdr;
 
-    fh->pipe_fd = fdr; //para que el fd sirva en el select. get free index no se usa y el define min sockets tampoco.
+    fh->pipe_fd = fdr; //para que el fd sirva en el select. 
 
     return 0;
 
@@ -131,21 +134,23 @@ fifo_handler * _create_fifo_handler(char * address){
 void _delete_fifo(int pipe_fd){ //que le paso? el pipefd, el pipe, el address?
 
     fifo_handler * del_fh = connections_list[_fd_to_index(pipe_fd)];
+    
     char aux_buffer[20];
 
-    close(del_fh->file_desc_r);
+    
     close(del_fh->file_desc_w);
-
-    sprintf(aux_buffer, "%s_%s", del_fh->pipe_address, "r"); 
-    unlink(aux_buffer);
     sprintf(aux_buffer, "%s_%s", del_fh->pipe_address, "w"); 
+    unlink(aux_buffer);
+
+    //close(del_fh->file_desc_r); 
+    sprintf(aux_buffer, "%s_%s", del_fh->pipe_address, "r"); 
     unlink(aux_buffer);
 
     free(del_fh->pipe_address);
     free(del_fh);
     connections_list[pipe_fd] = NULL;
     connections_number--;
-
+   
 }
 
 

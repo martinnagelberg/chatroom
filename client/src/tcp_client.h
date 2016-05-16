@@ -33,4 +33,5 @@ void write_check_logs(char * from, char * to);
 void write_get_online_users();
 void write_change_privileges(char* username, BYTE priv);
 
+
 #endif

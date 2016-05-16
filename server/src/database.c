@@ -366,12 +366,14 @@ int insert_chatlog(char * username, char * message) {
 
     if (rc) {
         log_error(ERROR, "Could not open DB file\n");
+        fprintf(stderr, "No se pudo abrir la DB. Razon: %s\n");
     }
     else {
 		sprintf(sql, "INSERT INTO CHATLOG(USER_ID, DATE_TIME, MESSAGE) VALUES ((SELECT ID FROM USERS WHERE USERNAME = '%s';), datetime('now', 'localtime'), '%s');", username, message);
 
 		rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 		if (rc != SQLITE_OK) {
+			fprintf(stderr, "No se pudo ejecutar la query. Razon: %s\n", errMsg);
 			log_error(ERROR, "Could not log the chatlog into the DB\n");
 			sqlite3_free(errMsg);
 		}

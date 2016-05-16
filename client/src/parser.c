@@ -96,7 +96,7 @@ int parse_cmd(char* msg, char** arg1, char** arg2) {
 					return CMD_CH_COLOR;
 					
 				case 6:		//delete username
-					if (arg1_length == 0 || arg2_length != 0) {
+					if (arg1_length == 0) {
 						fprintf(stderr, FAILED_DELETE_MSG);
 						j = cmds_amount;
 						break;

@@ -102,7 +102,7 @@ int main(int argc , char *argv[])
 					//write_change_privileges(arg1, arg2); IMPLEMENTAR (usuario, privilegio)
 					break;
 				case CMD_CH_COLOR:
-					write_change_color((int) *arg1);
+					write_change_color((unsigned char)(*arg1 - '0'));
 					break;
 				case CMD_DELETE_USER:
 					write_delete(arg1, password); 	//ver de no pasar la pass

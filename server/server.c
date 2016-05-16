@@ -19,6 +19,8 @@ t_user * user_list[MAX_USERS] = { NULL };
 int connected_users;
 int max_index = -1;
 
+pthread_mutex_t user_assign;
+
 //generate index
 //name to index
 
@@ -39,11 +41,17 @@ void * connection_handler(void * context) //STRUCT DE CONTEXTO = socket_desc
 
     context_info * my_context = (context_info*) context;
     int connection_fd = my_context->new_connection_descriptor;
+
+    //
+    pthread_mutex_lock(&user_assign);
     int user_index = get_free_index();
     int r_bytes;
 
     t_user * new_user = create_user(connection_fd);
     add_user(user_list, new_user, user_index);
+    pthread_mutex_unlock(&user_assign);
+    //
+
 
     printf("CREO UN USER CON TI %d\n",user_index);
 

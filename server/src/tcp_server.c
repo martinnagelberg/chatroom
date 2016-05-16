@@ -41,6 +41,7 @@ void handle_tcp_packets(int user_index){
     BYTE p_id;
 
     read_byte(user_list[user_index]->recv_buffer, &p_id);
+    printf("Me llega el pack %d con la data\n", p_id);
 
     switch (p_id){
 

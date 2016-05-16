@@ -1,10 +1,10 @@
 #include "parser.h"
 
-static char* all_cmds[] = {"login", "register", "logout", "change_password", "change_privileges", "change_color", "delete", "kick", "ban"};
-static int cmds_amount = 9;
+static char* all_cmds[] = {"login", "register", "logout", "change_password", "change_privileges", "change_color", "delete", "kick", "ban", "get_online_users"};
+static int cmds_amount = 10;
 
 void del_spaces(char* str);
-void replace_char(char* str, char c1, char c2);
+void separate_args(char* str);
 
 /**
  * Returns de command code and the arguments 1 and 2 initialized if needed
@@ -29,7 +29,7 @@ int parse_cmd(char* msg, char** arg1, char** arg2) {
 	msg_length = strlen(msg);
 	msg[msg_length - 1] = '\0';		//saco el \n que viene al final porque sino jode.
 	
-	replace_char(msg, ' ', '\0');
+	separate_args(msg);
 	cmd_length = strlen(msg);
 		
 	if (msg_length - cmd_length - 1 > 0) {	//Si queda algo despues del comando
@@ -118,6 +118,14 @@ int parse_cmd(char* msg, char** arg1, char** arg2) {
 						break;
 					}
 					return CMD_BAN;
+					
+				case 9:		//get_online_users
+					if (arg1_length != 0) {
+						fprintf(stderr, FAILED_GET_ONLINE_USERS);
+						j = cmds_amount;
+						break;
+					}
+					return CMD_GET_ONLINE_USERS;
 			}
 		}
 		
@@ -139,22 +147,28 @@ void del_spaces(char* str){
 	while (*str++ != 0){
 		if (*str != ' ')
 			*str2++ = *str;
-		else{
+		else {
 			if (*(str+1) == ' ')
 				continue;
 			else
 				*str2++ = *str;
-			}
+		}
 	}
 }
 
 /**
  * Reemplaza el char c1 por c2 en todo un string.
  */
- void replace_char(char* str, char c1, char c2) {
+ void separate_args(char* str) {
 	 while (*str != '\0') {
-		if (*str == c1)
-			*str = c2;
+		if (*str == '\'' || *str == '\"') {
+			str++;
+			while (*str != '\'' && *str == '\"' && *str != '\0')
+				str++;
+		}
+		if (*str == ' ') {
+			*str = '\0';
+		}
 		str++;
 	}
  }

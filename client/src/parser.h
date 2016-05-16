@@ -11,9 +11,10 @@
 #define FAILED_CHANGE_COLOR_MSG "Command syntax error. Correct format is: /change_color color (0 to 6)\n"
 #define FAILED_CHANGE_PASSWORD_MSG "Command syntax error. Correct format is: /change_password new_password\n"
 #define FAILED_CHANGE_PRIVILEGES_MSG "Command syntax error. Correct format is: /change_privileges username new_privileges\n"
-#define FAILED_KICK_MSG "Command syntax error. Correct format is: /kick username reason\n"
-#define FAILED_BAN_MSG "Command syntax error. Correct format is: /ban username reason\n"
+#define FAILED_KICK_MSG "Command syntax error. Correct format is: /kick username 'reason'\n"
+#define FAILED_BAN_MSG "Command syntax error. Correct format is: /ban username 'reason'\n"
 #define FAILED_LOGOUT_MSG "Command syntax error. Correct format is: /logout\n"
+#define FAILED_GET_ONLINE_USERS "Command syntax error. Correct format is: /get_online:users\n"
 
 #define CMD_ERROR 666
 #define CMD_CHAT 0
@@ -26,6 +27,7 @@
 #define CMD_KICK 7
 #define CMD_BAN 8
 #define CMD_LOGOUT 9
+#define CMD_GET_ONLINE_USERS
 
 int parse_cmd(char* msg, char** arg1, char** arg2);
 

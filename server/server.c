@@ -99,7 +99,7 @@ int main(int argc , char * argv[]) {
 
     connection_info server_info;
 
-    strcpy(server_info.ip, "192.168.43.18");
+    strcpy(server_info.ip, "127.0.0.1");
     server_info.port = 8888;
     int run = 1;
 
@@ -107,8 +107,13 @@ int main(int argc , char * argv[]) {
 		db_create();
 	}
 
+    if (pthread_mutex_init(&user_assign, NULL) != 0)
+        return 1;
+    
+
     listen_connections((void *)&server_info, server_main, &run); //manejo de errores
     
+    pthread_mutex_destroy(&user_assign);
     return 0;
 }
 

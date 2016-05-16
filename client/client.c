@@ -60,7 +60,7 @@ int main(int argc , char *argv[])
 	int cmd;
 
 	
-    init_client("192.168.43.18", 8888);
+    init_client("127.0.0.1", 8888);
 
     maxfd = 0;
     client_connection_id = 0;

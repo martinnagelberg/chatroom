@@ -16,7 +16,7 @@ void write_delete();
 void write_talk(char * mensaje);
 void handle_talk();
 
-void write_change_color(int color);
+void write_change_color(BYTE color);
 
 void write_change_pw(char * new_password);
 

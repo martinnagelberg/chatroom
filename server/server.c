@@ -39,6 +39,9 @@ int get_free_index(){
 //parser change pw 1 param
 //change color no funca
 //delete username no tiene que tener params.
+//logging queue
+//si la base no existe, crearla.
+//buffer overflow...
 
 
 void * connection_handler(void * context) //STRUCT DE CONTEXTO = socket_desc

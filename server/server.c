@@ -53,11 +53,9 @@ void * connection_handler(void * context) //STRUCT DE CONTEXTO = socket_desc
     //
 
 
-    printf("CREO UN USER CON TI %d\n",user_index);
 
     if (user_index > max_index){
         max_index = user_index;
-        printf("%d MAXINDEX y %d USERINDEX\n", max_index, user_index );
     }
 
     while (1){ 
@@ -101,7 +99,7 @@ int main(int argc , char * argv[]) {
 
     connection_info server_info;
 
-    strcpy(server_info.ip, "127.0.0.1");
+    strcpy(server_info.ip, "192.168.43.18");
     server_info.port = 8888;
     int run = 1;
 

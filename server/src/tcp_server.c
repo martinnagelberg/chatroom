@@ -52,7 +52,6 @@ void handle_tcp_packets(int user_index){
     BYTE p_id;
 
     read_byte(user_list[user_index]->recv_buffer, &p_id);
-    printf("Me llega el paquete %d\n", p_id);
 
     switch (p_id){
 
@@ -211,8 +210,7 @@ void handle_change_privs(int user_index) {
 	
 	read_string(user_list[user_index]->recv_buffer, username);
 	read_byte(user_list[user_index]->recv_buffer, &new_privilege);
-	
-	printf("New privilege: %d\nUser privilege: %d\n", new_privilege, user_list[user_index]->privileges);
+
 	
 	if (user_list[user_index]->privileges == 1) {
 		write_talk(user_index, "Usted no tiene permisos para cambiar privilegios de usuarios.", ERROR_COLOR);

@@ -41,7 +41,6 @@ void handle_tcp_packets(int user_index){
     BYTE p_id;
 
     read_byte(user_list[user_index]->recv_buffer, &p_id);
-    printf("Me llega el pack %d con la data\n", p_id);
 
     switch (p_id){
 
@@ -93,9 +92,10 @@ void handle_tcp_packets(int user_index){
 
 void server_login(int user_index, char * username, char color, char privileges){
 
-	user_list[user_index]->name = strdup(username); //ponerlo con un (MOD)o(ADMIN) segun priv.
+	user_list[user_index]->name = strdup(username); 
 	user_list[user_index]->color = color;
 	user_list[user_index]->privileges = privileges;
+	user_list[user_index]->logged = 1;
 
 	char aux_buffer[75];
 	sprintf(aux_buffer, "Servidor>> Se conectó %s a la sala.", username);
@@ -194,14 +194,12 @@ void handle_talk(int user_index){ //user index es el ejecutante. target a quien 
 
 void write_talk(int target_index, char * message, int color){
 
-
 	write_byte(user_list[target_index]->send_buffer, TALK);
 	write_string(user_list[target_index]->send_buffer, message);
 	write_byte(user_list[target_index]->send_buffer, color);
 
 	flush_buffer(user_list[target_index]->connection_descriptor, user_list[target_index]->send_buffer);
 	
-
 }
 
 void handle_change_color(int user_index){
@@ -284,16 +282,22 @@ void write_disconnect(int user_index){
 
 	disconnect(user_list[user_index]->connection_descriptor);
 	user_list[user_index]->connection_descriptor = -1;
-	connected_users--;
+	
+	if (user_list[user_index]->logged){
 
-	char aux_buffer[75];
-	sprintf(aux_buffer, "Servidor>> Se desconectó %s de la sala.", user_list[user_index]->name);
+		user_list[user_index]->logged = 0;
 
-	for (int i = 0; i < connected_users; i++){
-		write_talk(i, aux_buffer, SERVER_COLOR);
+		connected_users--;
+
+		char aux_buffer[75];
+		sprintf(aux_buffer, "Servidor>> Se desconectó %s de la sala.", user_list[user_index]->name);
+
+		for (int i = 0; i < connected_users; i++){
+			write_talk(i, aux_buffer, SERVER_COLOR);
+		}
+
+		log_error(INFO, "User disconnected"); //cambiar nombre a esta pija
 	}
-
-	log_error(INFO, "User disconnected"); //cambiar nombre a esta pija
 	
 
 }

@@ -13,6 +13,7 @@ t_user * create_user(int connection_fd){
     ret_user-> name = NULL;
     ret_user->color = 0;
     ret_user->privileges = 0;
+    ret_user->logged = 0;
 
     ret_user->recv_buffer = create_buffer();
 

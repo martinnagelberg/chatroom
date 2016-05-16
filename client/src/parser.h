@@ -14,7 +14,7 @@
 #define FAILED_KICK_MSG "Command syntax error. Correct format is: /kick username 'reason'\n"
 #define FAILED_BAN_MSG "Command syntax error. Correct format is: /ban username 'reason'\n"
 #define FAILED_LOGOUT_MSG "Command syntax error. Correct format is: /logout\n"
-#define FAILED_GET_ONLINE_USERS "Command syntax error. Correct format is: /get_online:users\n"
+#define FAILED_GET_ONLINE_USERS "Command syntax error. Correct format is: /get_online_users\n"
 
 #define CMD_ERROR 66
 #define CMD_CHAT 0

@@ -175,7 +175,6 @@ void del_spaces(char* str){
 				str++;
 		}
 		if (*str == ' ') {
-			printf("0-\n");
 			*str = '\0';
 		}
 		str++;

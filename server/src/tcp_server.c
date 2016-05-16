@@ -343,16 +343,17 @@ void handle_check_logs(int user_index){
 
 void handle_users_online(int user_index){
 
-	char * init_string = "Usuarios online: ";
+	char * init_string = "Usuarios online:";
 	char aux_buffer[(MAIN_BUFFER_SIZE * connected_users) + strlen(init_string)+1];
 	
 	strcpy(aux_buffer, init_string);
 
 	for (int i=0; i < connected_users; i++){
-
+		strcat(aux_buffer, "\n");
 		strcat(aux_buffer, user_list[i]->name);
-
 	}
+	strcat(aux_buffer, "\n");
+
 
 	printf("Resultado: %s\n", aux_buffer);
 

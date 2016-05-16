@@ -7,43 +7,6 @@ int callback(void* NotUsed, int argc, char** argv, char** column_name);
 int login_callback(void* user_login_info, int argc, char** argv, char** column_name);
 int get_chatlog_callback(void* chatlog_ptr, int argc, char** argv, char** column_name);
 
-// Main para testear
-/*int main(int argc, char const *argv[])
-{
-    Login_info log_info;
-
-    if (is_db_initiated() != QUERY_OK) {
-        printf("Base de datos no encontrada. Creando nueva.\n");
-        db_create();
-    }
-
-    if (argc == 2) { //hago que registre y se logee con el mismo usuario y contraseña, paja escribir las 2 por separado.
-        char* user_pass = malloc(sizeof(char) * strlen(argv[1]));
-        strcpy(user_pass, argv[1]);
-        printf("%d\n", register_user(user_pass, user_pass));
-        if (login(user_pass, user_pass, &log_info) == LOGIN_STATUS_SUCCESS)
-            printf("Loguie bien.\n");
-        else
-            printf("Loguie mal.\n");
-    }
-    else
-        fprintf(stderr, "Just 1 argument expected\n");
-
-    return 0;
-}*/
-
-/**
- * Callback generico para la ejecucion de comandos SQL
- */
-int callback(void* NotUsed, int argc, char** argv, char** column_name) {
-    int i;
-    for (i = 0 ; i < argc ; i++) {
-        printf("%s = %s\n", column_name[i], argv[i] ? argv[i] : "NULL");
-    }
-    putchar('\n');
-    return 0;
-}
-
 /**
  * Creation of both tables: users and chatlogs
  */

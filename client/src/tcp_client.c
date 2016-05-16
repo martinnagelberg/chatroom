@@ -244,6 +244,10 @@ void write_check_logs(char * from, char * to){
 
 }
 
+void write_change_privileges(arg1, arg2) {
+	
+}
+
 void write_get_online_users(){
 
     if (client_connection_id <= 0){

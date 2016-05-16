@@ -115,6 +115,9 @@ int main(int argc , char *argv[])
 				case CMD_BAN:
 					write_ban(arg1, arg2);
 					break;
+				case CMD_GET_ONLINE_USERS:
+					write_get_online_users();
+					break;
 				case CMD_ERROR:
 					fprintf(stderr, "Algo se rompió vieja...\n");
 					break;				

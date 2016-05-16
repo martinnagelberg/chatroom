@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #define STDIN_BUFFER_SIZE 256
+#define DEFAULT_COLOR 6
 
 int client_connection_id;
 int run;
@@ -91,7 +92,7 @@ int main(int argc , char *argv[])
 					write_talk(user_input);
 					break;
 				case CMD_LOGIN:
-					write_login(arg1, arg2, 5);
+					write_login(arg1, arg2, DEFAULT_COLOR);
 					break;
 				case CMD_REGISTER:
 					write_register(arg1, arg2);

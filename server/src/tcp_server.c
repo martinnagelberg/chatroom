@@ -141,16 +141,12 @@ void handle_login(int user_index){
 
 		if(ret_val == ERROR_USER_OR_PW_INCORRECT) {
 			write_talk(user_index, "Usuario o contraseña inválidos.", ERROR_COLOR);
-			log_error(WARNING, "Usuario o contraseña inválidos.");
 		}
-
 		else if (ret_val == ERROR_USER_BANNED){
 			write_talk(user_index, "Usuario baneado.", ERROR_COLOR);
-			log_error(WARNING, "Usuario baneado.");
 		}
 
 		write_disconnect(user_index);
-		log_error(INFO, "Usuario desconectado.");
 		return;
 	}
 
@@ -166,9 +162,7 @@ void handle_login(int user_index){
 
 	if ((user_already_online(aux_buff))){
 		write_talk(user_index, "Ese usuario ya está logeado.", ERROR_COLOR);
-		log_error(WARNING, "Usuario ya logueado.");
 		write_disconnect(user_index);
-		log_error(INFO, "Usuario desconectado.");
 		return;
 	}
 
@@ -188,11 +182,11 @@ void handle_register(int user_index) {
 
 	if(register_user(username, password) == ERROR_USER_ALREADY_REGISTERED){
 		write_talk(user_index, "Usuario ya existente.", ERROR_COLOR);
-		log_error(WARNING, "Usuario ya existente.");
 		write_disconnect(user_index);
-		log_error(INFO, "Usuario desconectado.");
 		return;
 	}
+
+	log_error(INFO, "User registered");
 
 	server_login(user_index, username, DEFAULT_COLOR, USER_NORMAL);
 
@@ -204,9 +198,8 @@ void handle_delete(int user_index){
 
 	delete_username(user_list[user_index]->name);
 	write_talk(user_index, "Tu usuario fue borrado con éxito", SERVER_COLOR);
-	log_error(INFO, "Usuario fue borrado con éxito.");
+	log_error(INFO, "User deleted");
 	write_disconnect(user_index);
-	log_error(INFO, "Usuario desconectado.");
 
 }
 
@@ -313,7 +306,6 @@ void handle_change_pw(int user_index){
 	change_password(user_list[user_index]->name, new_password);
 
 	write_talk(user_index, "Contraseña cambiada satisfactoriamente.", SERVER_COLOR);
-	log_error(INFO, "Contraseña cambiada satisfactoriamente.");
 
 }
 
@@ -326,7 +318,6 @@ void handle_kick(int user_index){
 
 	if (user_list[user_index]->privileges < USER_MOD){
 		write_talk(user_index, "No tenés suficientes privilegios.", ERROR_COLOR);
-		log_error(WARNING, "El usuario no tiene suficientes privilegios.");
 		return;
 	}
 
@@ -347,7 +338,6 @@ void handle_ban(int user_index){
 
 	if (user_list[user_index]->privileges < USER_ADMIN){
 		write_talk(user_index, "No tenés suficientes privilegios.", ERROR_COLOR);
-		log_error(WARNING, "El usuario no tiene suficientes privilegios.");
 		return;
 	}
 
@@ -358,7 +348,6 @@ void handle_ban(int user_index){
 	set_user_banned(username, 1);
 	write_talk(target_index, aux_buff, SERVER_COLOR);
 	write_disconnect(target_index);
-	log_error(INFO, "Usuario desconectado.");
 
 }
 
@@ -367,7 +356,6 @@ void handle_disconnect(int user_index){
 
 	write_talk(user_index, "Hasta la proxima...", SERVER_COLOR);
 	write_disconnect(user_index);
-	log_error(INFO, "Usuario desconectado.");
 
 }
 
@@ -410,7 +398,7 @@ void handle_check_logs(int user_index){
 
 void handle_users_online(int user_index){
 
-	char * init_string = "Usuarios online:";
+	char * init_string = "Usuarios online: ";
 	char aux_buffer[(MAIN_BUFFER_SIZE * connected_users) + strlen(init_string)+1];
 	
 	strcpy(aux_buffer, init_string);
@@ -420,9 +408,6 @@ void handle_users_online(int user_index){
 		strcat(aux_buffer, user_list[i]->name);
 	}
 	strcat(aux_buffer, "\n");
-
-
-	printf("Resultado: %s\n", aux_buffer);
 
 	write_talk(user_index, aux_buffer, SERVER_COLOR);
 

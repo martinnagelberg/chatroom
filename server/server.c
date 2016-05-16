@@ -32,19 +32,6 @@ int get_free_index(){
     return -1;
 }
 
-//no mandar espacios
-//reset rojo
-//informe
-//servidor que cree la db 
-//config file
-//parser espacios en las reasons
-//parser change pw 1 param
-//change color no funca
-//delete username no tiene que tener params.
-//logging queue
-//si la base no existe, crearla.
-//buffer overflow...
-
 
 void * connection_handler(void * context) //STRUCT DE CONTEXTO = socket_desc
 {
